@@ -1,21 +1,33 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import {CommentWithOwner, PostWithOwner} from '../types/DBTypes';
 import {useComment} from '../hooks/apiHooks';
-import {Comment, Post} from '../types/DBTypes';
-import {Icon, Input, Layout, List} from '@ui-kitten/components';
+import {useUserContext} from '../hooks/contextHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Controller, useForm} from 'react-hook-form';
-import {useUserContext} from '../hooks/contextHooks';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import {Icon, Input, Layout, List} from '@ui-kitten/components';
 
-type CommentWithOwner = Comment & {username: string};
-
-export default function Comments({post}: {post: Post}) {
+export default function Comments({
+  post,
+  showComments,
+  setShowComments,
+}: {
+  post: PostWithOwner;
+  showComments: boolean;
+  setShowComments: (value: boolean) => void;
+}) {
   const {getCommentsByPostId, getCommentCount, postComment} = useComment();
   const [comments, setComments] = useState<CommentWithOwner[]>([]);
   const {user} = useUserContext();
   const [count, setCount] = useState<number>(0);
   const {update, setUpdate} = useUpdateContext();
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
   const values = {comment_text: ''};
   const {
     control,
@@ -27,32 +39,27 @@ export default function Comments({post}: {post: Post}) {
   const resetForm = () => {
     reset(values);
   };
-
   const getComments = async () => {
     try {
       const comments = await getCommentsByPostId(post.post_id);
-      console.log(comments);
       if (!comments) {
         return;
       }
+      console.log(comments);
       setComments(comments);
     } catch (error) {
       console.log((error as Error).message);
     }
   };
 
-  useEffect(() => {
-    getComments();
-  }, [update]);
-
   const getCount = async () => {
     try {
       const result = await getCommentCount(post.post_id);
-      console.log(result);
       if (!result) {
         return;
       }
       setCount(result.count);
+      console.log('comment count', result.count);
     } catch (error) {
       console.log((error as Error).message);
     }
@@ -63,22 +70,18 @@ export default function Comments({post}: {post: Post}) {
     if (!token) {
       return;
     }
-    console.log(inputs);
     try {
       const result = await postComment(
         inputs.comment_text,
         post.post_id,
         token
       );
-      console.log(result);
       setUpdate(!update);
       resetForm();
     } catch (error) {
       console.log((error as Error).message);
     }
   };
-
-  console.log(comments);
 
   useEffect(() => {
     getComments();
@@ -111,56 +114,129 @@ export default function Comments({post}: {post: Post}) {
     icon: {
       width: 32,
       height: 32,
+      left: 100,
+      margin: 10,
+    },
+    button: {
+      padding: 15,
+      width: 32,
+      height: 32,
+      margin: 10,
+      marginLeft: 20,
+      bottom: 12,
+    },
+    layout: {
+      backgroundColor: 'white',
+      flexDirection: 'column',
+      width: '100%',
+      margin: 10,
+      alignItems: 'center',
+      borderColor: '#527853',
+      borderWidth: 2,
+      borderRadius: 15,
+      paddingRight: 10,
+      paddingLeft: 10,
+      padding: 5,
+    },
+    comment: {
+      backgroundColor: 'white',
+      flexDirection: 'column',
+      width: '100%',
+      margin: 10,
+      alignItems: 'center',
+      paddingRight: 10,
+      paddingLeft: 10,
+      padding: 5,
     },
   });
+
   return (
     <View>
-      <Icon name="message-circle" style={styles.icon} />
-      <Text>{count ? count : 0}</Text>
-      <List
-        data={comments}
-        renderItem={({item}) => (
-          <View style={styles.header}>
-            <Text>{user && user.user_id === item.user_id ? 'You' : item.username}</Text>
-            <Text>{item.comment_text}</Text>
-          </View>
-        )}
-      />
-      {user ? (
-        user.user_id === post.user_id ? null : (
-          <Layout>
-            <Controller
-              control={control}
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Comment is required',
-                },
-              }}
-              render={({field: {onChange, onBlur, value}}) => (
-                <Layout>
-                  <Text>Comment</Text>
-                  <Input
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                  />
+      <TouchableOpacity onPress={() => setShowComments(!showComments)}>
+        <Icon name="message-circle" fill="#527853" style={styles.button} />
+        <Text style={{left: 50, bottom: 45, marginLeft: 5}}>
+          {count ? count : 0}
+        </Text>
+      </TouchableOpacity>
+      {showComments && user?.user_id !== post.user_id && (
+        <Layout style={{backgroundColor: '#FAF8ED', width: 300}}>
+          <List
+            style={{backgroundColor: '#FAF8ED', width: '100%'}}
+            data={comments}
+            renderItem={({item}) =>
+              user?.user_id === item.user_id ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('EditComment', {
+                      comment: item,
+                      post: post,
+                    })
+                  }
+                >
+                  <Layout style={styles.layout}>
+                    <Text style={{fontWeight: 'bold'}}>You</Text>
+                    <Text>{item.comment_text}</Text>
+                    <Text>
+                      {new Date(item.created_at).toLocaleDateString('fi-FI')}
+                    </Text>
+                  </Layout>
+                </TouchableOpacity>
+              ) : (
+                <Layout style={styles.layout}>
+                  <Text>{item.username}</Text>
+                  <Text>{item.comment_text}</Text>
+                  <Text>
+                    {new Date(item.created_at).toLocaleDateString('fi-FI')}
+                  </Text>
                 </Layout>
-              )}
-              name="comment_text"
-              defaultValue=""
-            />
-            <Layout>
-              <Icon
-                name="paper-plane"
-                style={styles.icon}
-                onPress={handleSubmit(addComment)}
+              )
+            }
+          />
+          {user ? (
+            <Layout style={styles.layout}>
+              <Controller
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Comment is required',
+                  },
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <Layout
+                    style={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      width: '100%',
+                    }}
+                  >
+                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>
+                      Comment
+                    </Text>
+                    <Input
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                    />
+                  </Layout>
+                )}
+                name="comment_text"
+                defaultValue=""
               />
+              <Layout>
+                <Icon
+                  name="paper-plane"
+                  style={styles.icon}
+                  fill="#527853"
+                  onPress={handleSubmit(addComment)}
+                />
+              </Layout>
             </Layout>
-          </Layout>
-        )
-      ) : (
-        <Text>Log in to comment</Text>
+          ) : (
+            <Text>Sign in to comment</Text>
+          )}
+        </Layout>
       )}
     </View>
   );

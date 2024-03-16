@@ -28,7 +28,6 @@ export default function UserInfo({user}: {user: UnauthorizedUser}) {
   const {handleDelete} = useUserContext();
   const theme = useTheme();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {getUserById} = useUser();
   const {update, setUpdate} = useUpdateContext();
 
   const styles = StyleSheet.create({

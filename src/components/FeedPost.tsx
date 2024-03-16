@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {usePost} from '../hooks/apiHooks';
 import {useUserContext} from '../hooks/contextHooks';
 import {PostWithOwner} from '../types/DBTypes';
@@ -16,6 +16,7 @@ import {
   useTheme,
   Text,
   Icon,
+  Layout,
 } from '@ui-kitten/components';
 import {View, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,12 +29,13 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
   const {user} = useUserContext();
   const {deletePost} = usePost();
   const {update, setUpdate} = useUpdateContext();
+  const [showComments, setShowComments] = useState<boolean>(false);
 
   const handleDelete = async () => {
     Alert.alert('Are you sure you want to delete this post?', '', [
       {
         text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
+        onPress: () => {},
         style: 'cancel',
       },
       {
@@ -89,20 +91,24 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
       height: 200,
       resizeMode: 'cover',
       marginBottom: 10,
+      width: 100
     },
     actions: {
       flexDirection: 'row',
-      justifyContent: 'center',
+      justifyContent: 'space-evenly',
       alignItems: 'center',
       backgroundColor: '#FAF8ED',
+      padding: 10,
     },
     editButton: {
       padding: 15,
-      width: 100,
+      width: 32,
+      marginRight: 10,
+      marginLeft: 10,
     },
     deleteButton: {
       padding: 15,
-      width: 100,
+      width: 32,
       marginRight: 10,
     },
     icon: {
@@ -147,7 +153,13 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
       <Divider />
       <ListItem style={styles.actions}>
         {user?.user_id === post.user_id ? (
-          <>
+          <Layout
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              backgroundColor: '#FAF8ED',
+            }}
+          >
             <TouchableOpacity onPress={handleDelete}>
               <Icon style={styles.deleteButton} fill="#CC3636" name="trash-2" />
             </TouchableOpacity>
@@ -158,21 +170,24 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
             >
               <Icon style={styles.editButton} fill="#527853" name="edit" />
             </TouchableOpacity>
-          </>
+            <Layout style={{
+              flexDirection: 'row',
+              backgroundColor: '#FAF8ED',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+              <Likes post={post} showComments={showComments} />
+              <Comments post={post} showComments={showComments} setShowComments={setShowComments} />
+            </Layout>
+          </Layout>
         ) : (
           <>
-            <View style={styles.mainContainer}>
-              <TouchableOpacity>
-                <View style={styles.iconContainer}>
-                  <Likes post={post} />
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <View style={styles.iconContainer}>
-                  <Comments post={post} />
-                </View>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity>
+              <Likes post={post} showComments={showComments} />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Comments post={post} showComments={showComments} setShowComments={setShowComments} />
+            </TouchableOpacity>
           </>
         )}
       </ListItem>

@@ -1,126 +1,106 @@
-import {Text, Layout, Button, Icon} from '@ui-kitten/components';
-import React, {useEffect, useReducer} from 'react';
-import {Like, Post, PostWithOwner} from '../types/DBTypes';
-import {useLike, useUser} from '../hooks/apiHooks';
+import {
+  View,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {PostWithOwner} from '../types/DBTypes';
+import {useLike} from '../hooks/apiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, StyleSheet, View} from 'react-native';
+import {useUserContext} from '../hooks/contextHooks';
+import useUpdateContext from '../hooks/updateHooks';
+import {Icon} from '@ui-kitten/components';
 
-export default function Likes({post}: {post: PostWithOwner}) {
-  type LikeState = {
-    count: number;
-    userLike: Like | null;
-  };
+export default function Likes({post, showComments}: {post: PostWithOwner; showComments: boolean}) {
+  const {getCountByPost, getLikeByUser, deleteLike, postLike} = useLike();
+  const {user} = useUserContext();
+  const {update, setUpdate} = useUpdateContext();
+  const [count, setCount] = useState<number>(0);
+  const [userLiked, setUserLiked] = useState<boolean>(false);
 
-  type LikeAction = {
-    type: 'setLikeCount' | 'like';
-    count?: number;
-    like?: Like | null;
-  };
-
-  const likeInitialState: LikeState = {
-    count: 0,
-    userLike: null,
-  };
-
-  const likeReducer = (state: LikeState, action: LikeAction): LikeState => {
-    switch (action.type) {
-      case 'setLikeCount':
-        return {...state, count: action.count ?? 0};
-      case 'like':
-        if (action.like !== undefined) {
-          return {...state, userLike: action.like};
-        }
-        return state;
+  const getCount = async () => {
+    try {
+      const result = await getCountByPost(post.post_id);
+      console.log('like count', result.count);
+      setCount(result.count);
+    } catch (e) {
+      console.log((e as Error).message);
     }
-    return state;
   };
 
-  const [likeState, likeDispatch] = useReducer(likeReducer, likeInitialState);
-  const {getLikeByUser, getCountByPost, postLike, deleteLike} = useLike();
-  const user = useUser();
-
-  const getLikes = async () => {
+  const getLikesByUser = async () => {
     const token = await AsyncStorage.getItem('token');
     if (!token || !user) {
       return;
     }
     try {
       const userLike = await getLikeByUser(post.post_id, token);
-      if (!userLike) {
-        likeDispatch({type: 'like', like: null});
-        return;
-      }
-    } catch (e) {
-      console.log('get user like error', (e as Error).message);
+      setUserLiked(!!userLike);
+    } catch (error) {
+      console.log((error as Error).message);
     }
   };
 
-  const getCount = async () => {
+  const handleLike = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (!token || !user) {
+      return;
+    }
+    if (user.user_id === post.user_id) {
+      Alert.alert('You cannot like your own post');
+      return;
+    }
     try {
-      const countResponse = await getCountByPost(post.post_id);
-      likeDispatch({type: 'setLikeCount', count: countResponse.count});
-    } catch (e) {
-      likeDispatch({type: 'setLikeCount', count: 0});
-      console.log('get user like error', (e as Error).message);
+      if (userLiked) {
+        await deleteLike(post.post_id, token);
+        setUserLiked(false);
+        setCount((prev) => prev - 1);
+        setUpdate(!update);
+        console.log('like deleted');
+      } else {
+        await postLike(post.post_id, token);
+        setUserLiked(true);
+        setCount((prev) => prev + 1);
+        setUpdate(!update);
+        console.log('like posted');
+      }
+    } catch (error) {
+      console.log((error as Error).message);
     }
   };
 
   useEffect(() => {
-    getLikes();
+    getLikesByUser();
     getCount();
-  }, [post]);
-
-  const handleLike = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (!post || !token) {
-        return;
-      }
-
-      if (likeState.userLike) {
-        const result = await deleteLike(likeState.userLike.like_id, token);
-        if (result) {
-          likeDispatch({type: 'like', like: null});
-          likeDispatch({type: 'setLikeCount', count: likeState.count - 1});
-        } else {
-          console.error('Error deleting like');
-        }
-      } else {
-        const result = await postLike(post.post_id, token);
-        if (result) {
-          // Fetch the updated count after posting a new like
-          const updatedCount = await getCountByPost(post.post_id);
-          likeDispatch({type: 'setLikeCount', count: updatedCount.count});
-          // Fetch the user's like after posting a new like
-          const newUserLike = await getLikeByUser(post.post_id, token);
-          likeDispatch({type: 'like', like: newUserLike || null});
-        } else {
-          console.error('Error creating like');
-        }
-      }
-    } catch (e) {
-      Alert.alert((e as Error).message);
-    }
-  };
+  }, [update]);
 
   const styles = StyleSheet.create({
-    icon: {
-      width: 32,
-      height: 32,
+    container: {
+      alignItems: 'center',
     },
-    text: {
-      fontWeight: 'bold',
+    button: {
+      height: 32,
+      width: 32,
+      bottom: 12,
+      margin: 5
     },
   });
+
   return (
-    <View>
-      <Icon
-        name="heart"
-        style={styles.icon}
-        onPress={handleLike}
-        fill={likeState.userLike ? '#C13584' : '#000000'}
-      />
-      <Text>{likeState.count}</Text>
+    <View style={styles.container}>
+      {!showComments && (
+      <TouchableOpacity onPress={handleLike} style={{alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
+        <Icon
+          name={userLiked ? 'heart' : 'heart-outline'}
+          fill={userLiked ? '#CC3636' : '#527853'}
+          style={styles.button}
+        ></Icon>
+        <Text style={{left: 20, bottom: 40, marginLeft: 10}}>{count}</Text>
+      </TouchableOpacity>
+      )}
     </View>
   );
 }

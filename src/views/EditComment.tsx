@@ -1,23 +1,25 @@
-import React, {useEffect} from 'react'
-import { Controller, useForm } from 'react-hook-form';
-import { useUser } from '../hooks/apiHooks';
-import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, Keyboard, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
-import {Button, Card, Input, Text} from '@ui-kitten/components';
-import {PutUserValues, User} from '../types/DBTypes';
+import {Alert, TouchableOpacity, Keyboard, StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
+import {useComment} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import {Comment} from '../types/DBTypes';
+import {Controller, useForm} from 'react-hook-form';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Card, Input, Button} from '@ui-kitten/components';
 
-const EditProfile = ({route}: any) => {
-  const user: User = route.params;
-  const {putUser} = useUser();
+export default function EditComment({route}: {route: any}) {
+  const {comment} = route.params;
+  const {putComment} = useComment();
   const {update, setUpdate} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
-  const values: Pick<User, 'username' | 'password' | 'email'> = {
-    username: user.username,
-    password: user.password,
-    email: user.email,
+  const values: Pick<Comment, 'comment_text'> = {
+    comment_text: comment.comment_text,
   };
 
   const {
@@ -31,19 +33,23 @@ const EditProfile = ({route}: any) => {
     reset(values);
   };
 
-  const edit = async (inputs: PutUserValues) => {
+  const edit = async (inputs: Pick<Comment, 'comment_text'>) => {
     try {
       const token = await AsyncStorage.getItem('token');
       if (!token) {
         return;
       }
-      const result = await putUser(inputs, token);
+      const result = await putComment(
+        comment.comment_id,
+        inputs.comment_text,
+        token
+      );
       Alert.alert(result.message);
       setUpdate(!update);
-      navigation.navigate('Profile');
+      navigation.navigate('Feed');
       resetForm();
-    } catch (e) {
-      Alert.alert((e as Error).message);
+    } catch (error) {
+      Alert.alert((error as Error).message);
     }
   };
 
@@ -53,8 +59,7 @@ const EditProfile = ({route}: any) => {
     });
 
     return unsubscribe;
-  }
-  , []);
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -62,6 +67,7 @@ const EditProfile = ({route}: any) => {
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: '#527853',
+      width: '100%',
     },
     card: {
       margin: 15,
@@ -75,7 +81,7 @@ const EditProfile = ({route}: any) => {
       margin: 10,
       backgroundColor: '#50623A',
       borderWidth: 1,
-    }
+    },
   });
 
   return (
@@ -95,40 +101,20 @@ const EditProfile = ({route}: any) => {
           }}
           render={({field: {onChange, onBlur, value}}) => (
             <Input
-              placeholder="Username"
+              placeholder="Text"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               style={styles.input}
+              multiline={true}
             />
           )}
-          name="username"
-        />
-        <Controller
-          control={control}
-          rules={{
-            required: {
-              value: false,
-              message: '',
-            },
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              placeholder="Email"
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              style={styles.input}
-            />
-          )}
-          name="email"
+          name="comment_text"
         />
         <Button onPress={handleSubmit(edit)} style={styles.button}>
-          <Text>Save</Text>
+          Save
         </Button>
       </Card>
     </TouchableOpacity>
   );
-};
-
-export default EditProfile;
+}

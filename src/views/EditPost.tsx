@@ -86,7 +86,7 @@ const EditPost = ({route}: any) => {
       margin: 10,
       backgroundColor: '#50623A',
       borderWidth: 1,
-    }
+    },
   });
   return (
     <TouchableOpacity

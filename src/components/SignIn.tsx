@@ -23,7 +23,6 @@ const AlertIcon = (props: any): IconElement => (
 
 const SignIn = () => {
   const [register, setRegister] = useState(false);
-  const handleToggle = () => setRegister(!register);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {handleLogin} = useUserContext();
   const [showPassword, setShowPassword] = useState<boolean>(true);
@@ -55,7 +54,6 @@ const SignIn = () => {
   } = useForm({defaultValues: values});
 
   const doLogin = async (inputs: Values) => {
-    console.log('doLogin', inputs);
     handleLogin(inputs);
   };
 

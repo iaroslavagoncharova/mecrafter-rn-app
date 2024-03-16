@@ -117,7 +117,8 @@ export default function HabitInfo() {
             textAlign: 'center',
           }}
         >
-          Current habit: {user ? user.habit_name : 'Not set'}
+          Current habit:{' '}
+          {user && user.habit_name !== null ? user.habit_name : 'Not set'}
         </Text>
         <Button
           onPress={() => {
@@ -137,10 +138,12 @@ export default function HabitInfo() {
             textAlign: 'center',
           }}
         >
-          Current frequency: {user ? user.habit_frequency : 'Not set'}
-          {user?.habit_frequency === 1
-            ? ' time a week'
-            : ' times a week' || 'Not set'}
+          Current frequency:{' '}
+          {user && user.habit_frequency !== null
+            ? user.habit_frequency === 1
+              ?  `${user.habit_frequency} time a week`
+              : `${user.habit_frequency} times a week`
+            : 'Not set'}
         </Text>
         <Button
           onPress={() => {

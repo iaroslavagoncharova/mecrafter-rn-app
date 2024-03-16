@@ -57,17 +57,13 @@ export default function CreatePost() {
     let path = image.assets[0].uri;
     if (!image.assets[0].fileName) {
       image.assets[0].fileName = path.split('/').pop();
-      console.log(image.assets[0].fileName);
     }
     image.assets[0].uri = path;
     const newUri = image.assets[0].uri;
-    console.log(newUri, 'newUri', 'path', path, 'image', image);
     try {
       const token = await AsyncStorage.getItem('token');
       if (token) {
-        console.log(newUri, 'new Uri');
         const result = await postExpoFile(newUri, token);
-        console.log(result);
         const postResult = await postPost(result, inputs, token);
         Alert.alert(postResult.message);
         setUpdate(!update);

@@ -18,11 +18,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StyleSheet} from 'react-native';
 import {useForm} from 'react-hook-form';
 import RNPickerSelect from 'react-native-picker-select';
+import {useUserContext} from '../hooks/contextHooks';
 
 export default function Explore() {
   const [filter, setFilter] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const {habits} = useHabit();
+  const {user} = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState('');
   const placeholder = {
     label: 'Select an option...',
@@ -144,6 +146,7 @@ export default function Explore() {
       alignItems: 'center',
       borderColor: '#527853',
       borderWidth: 2,
+      width: '90%',
     },
     text: {
       padding: 5,
@@ -160,7 +163,7 @@ export default function Explore() {
       <Text
         style={{
           fontWeight: 'bold',
-          marginBottom: 16,
+          margin: 10,
           color: 'white',
           textAlign: 'center',
         }}
@@ -192,7 +195,7 @@ export default function Explore() {
       {categorySelected && <Button onPress={resetFilters}>Reset</Button>}
       {selectedCategory ? <Text>Category: {selectedCategory}</Text> : null}
       <List
-      style={{backgroundColor: '#294B29'}}
+        style={{backgroundColor: '#294B29'}}
         data={filteredHabits}
         renderItem={({item}) => (
           <Layout style={styles.habit}>
@@ -205,15 +208,21 @@ export default function Explore() {
             >
               Category: {item.habit_category}
             </Text>
-            <Button
-              onPress={() => {
-                values.habit_id = item.habit_id.toString();
-                changeHabit(values);
-              }}
-              style={{backgroundColor: '#527853'}}
-            >
-              Add
-            </Button>
+            {user ? (
+              <Button
+                onPress={() => {
+                  values.habit_id = item.habit_id.toString();
+                  changeHabit(values);
+                }}
+                style={{backgroundColor: '#527853'}}
+              >
+                Add
+              </Button>
+            ) : (
+              <Text style={styles.text}>
+                Log in to add this habit to your tracker
+              </Text>
+            )}
           </Layout>
         )}
       />

@@ -37,7 +37,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       const token = await AsyncStorage.getItem("token");
       if (token) {
         const result = await getUserByToken(token);
-        console.log(result.user);
+        console.log('autologin', result.user);
         setUser(result.user);
       }
     } catch (e) {

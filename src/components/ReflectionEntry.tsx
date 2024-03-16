@@ -117,7 +117,7 @@ export default function ReflectionEntry(props: {
   });
 
   return (
-    <Layout style={styles.layout}>
+    <View style={styles.layout}>
       <Text
         style={{
           fontWeight: 'bold',
@@ -174,30 +174,40 @@ export default function ReflectionEntry(props: {
           Add reflection
         </Button>
       </Layout>
-      <Text
-        style={{
-          fontWeight: 'bold',
-          color: 'white',
-          marginBottom: 8,
-          fontSize: 18,
-        }}
-      >
-        Your reflections
-      </Text>
-      <List
-        style={{backgroundColor: '#294B29'}}
-        data={reflections}
-        renderItem={({item}) => (
-          <Layout style={styles.reflection}>
-            <Text style={styles.headerText}>{item.prompt_text}</Text>
-            <Text>{item.reflection_text}</Text>
-            <Text>
-              {new Date(item.created_at).toLocaleDateString()} at{' '}
-              {new Date(item.created_at).toLocaleTimeString()}
-            </Text>
-          </Layout>
-        )}
-      />
-    </Layout>
+
+      {reflections.length > 0 ? (
+        <View style={{flex: 1, width: '100%'}}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              color: 'white',
+              marginBottom: 8,
+              fontSize: 18,
+              textAlign: 'center',
+            }}
+          >
+            Your reflections
+          </Text>
+          <List
+            style={{backgroundColor: '#294B29'}}
+            data={reflections}
+            renderItem={({item}) => (
+              <Layout style={styles.reflection}>
+                <Text style={styles.headerText}>{item.prompt_text}</Text>
+                <Text>{item.reflection_text}</Text>
+                <Text>
+                  {new Date(item.created_at).toLocaleDateString()} at{' '}
+                  {new Date(item.created_at).toLocaleTimeString()}
+                </Text>
+              </Layout>
+            )}
+          />
+        </View>
+      ) : (
+        <Text style={{color: 'white', fontWeight: 'bold', fontSize: 18}}>
+          No reflections yet
+        </Text>
+      )}
+    </View>
   );
 }

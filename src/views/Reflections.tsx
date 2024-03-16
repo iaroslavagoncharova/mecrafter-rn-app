@@ -19,6 +19,7 @@ export default function Reflections() {
     }
     const result = await getReflectionsByUser(user.user_id, token);
     if (!result) {
+      setReflections([]);
       return;
     }
     setReflections(result);

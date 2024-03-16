@@ -23,6 +23,7 @@ import SignIn from '../components/SignIn';
 import AuthPage from '../views/AuthPage';
 import EditProfile from '../views/EditProfile';
 import Reflections from '../views/Reflections';
+import EditComment from '../views/EditComment';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -86,6 +87,7 @@ const StackNavigator = () => {
           <Stack.Screen name="EditPost" component={EditPost} />
           <Stack.Screen name="CreatePost" component={CreatePost} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="EditComment" component={EditComment} />
         </>
       ) : (
         <>
