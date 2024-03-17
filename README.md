@@ -19,7 +19,6 @@ To deploy the MeCrafter app, follow these steps:
    - Authentication server is available at [auth-api](http://10.120.32.96/auth-api/api/v1)
    - Media server is available at [media-api](http://10.120.32.96/media-api/api/v1)
    - Upload server is available at [upload](http://10.120.32.96/upload/api/v1)
-   - Uploaded files are available at [uploads](http://10.120.32.96/uploads)
 
 ## Backend
 
