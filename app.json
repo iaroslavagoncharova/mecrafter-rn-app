@@ -3,8 +3,10 @@
     "name": "expo-app",
     "slug": "expo-app",
     "version": "1.0.0",
+    "asset": [
+      "./assets/fonts/GloriaHallelujah-Regular.ttf"],
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",

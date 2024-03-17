@@ -24,6 +24,7 @@ import AuthPage from '../views/AuthPage';
 import EditProfile from '../views/EditProfile';
 import Reflections from '../views/Reflections';
 import EditComment from '../views/EditComment';
+import WelcomeScreen from '../views/WelcomeScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -77,6 +78,7 @@ const StackNavigator = () => {
   const {user} = useUserContext();
   return (
     <Stack.Navigator>
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       {user ? (
         <>
           <Stack.Screen

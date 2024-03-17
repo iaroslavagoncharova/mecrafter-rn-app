@@ -1,22 +1,15 @@
 import * as eva from '@eva-design/eva';
-import {
-  ApplicationProvider,
-  Button,
-  IconRegistry,
-  Layout,
-  Text,
-  Icon,
-} from '@ui-kitten/components';
+import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
 import React from 'react';
-import AppNavigator from './src/navigators/Navigator';
 import {UserProvider} from './src/contexts/UserContext';
 import {UpdateProvider} from './src/contexts/UpdateContext';
-import {StatusBar} from 'expo-status-bar';
-import {default as theme} from './custom-theme.json';
+import AppNavigator from './src/navigators/Navigator';
 import {useFonts} from 'expo-font';
 import {EvaIconsPack} from '@ui-kitten/eva-icons';
+import theme from './custom-theme.json';
 
 export default () => {
+
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
