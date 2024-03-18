@@ -29,7 +29,11 @@ const SignUp = ({handleToggle}: {handleToggle: () => void}) => {
   const renderCaption = () => {
     return (
       <View style={styles.captionContainer}>
-        <Icon style={styles.captionIcon} fill="#8F9BB3" name="alert-circle-outline" />
+        <Icon
+          style={styles.captionIcon}
+          fill="#8F9BB3"
+          name="alert-circle-outline"
+        />
         <Text style={styles.captionText}>
           Password must be at least 8 characters long.
         </Text>
@@ -197,7 +201,7 @@ const SignUp = ({handleToggle}: {handleToggle: () => void}) => {
             placeholder="Password"
             caption={renderCaption}
             accessoryRight={renderIcon}
-            autoCapitalize='none'
+            autoCapitalize="none"
           />
         )}
         name="password"
@@ -226,7 +230,7 @@ const SignUp = ({handleToggle}: {handleToggle: () => void}) => {
             placeholder="Confirm password"
             caption={renderCaption}
             accessoryRight={renderIcon}
-            autoCapitalize='none'
+            autoCapitalize="none"
           />
         )}
         name="confirmPassword"

@@ -1,5 +1,5 @@
 import {StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {usePost} from '../hooks/apiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FeedPost from '../components/FeedPost';
@@ -12,6 +12,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 const Feed = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
   const {postArray} = usePost();
   const {user} = useUserContext();
+  const {handleAutoLogin} = useUserContext();
+  useEffect(() => {
+    handleAutoLogin();
+  }, []);
   if (!postArray.length) {
     return <Icon name="loader-outline" style={{width: 32, height: 32}} />;
   }
@@ -29,6 +33,7 @@ const Feed = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
     },
   });
   const plusIcon = (props: any) => <Icon {...props} name="plus" />;
+
   return (
     <Layout
       style={{

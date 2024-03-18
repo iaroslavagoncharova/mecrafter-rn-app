@@ -8,11 +8,6 @@ import SignUp from '../components/SignUp';
 export default function AuthPage() {
   const [register, setRegister] = useState(false);
   const handleToggle = () => setRegister(!register);
-  const {handleAutoLogin} = useUserContext();
-
-  useEffect(() => {
-    handleAutoLogin();
-  }, []);
 
   return (
     <TouchableOpacity

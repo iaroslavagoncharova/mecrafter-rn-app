@@ -146,7 +146,7 @@ export default function Tracker() {
       <Text
         style={{textAlign: 'center', margin: 10, padding: 10, color: 'white'}}
       >
-        {user?.habit_frequency !== null
+        {user?.habit_frequency !== null && user?.habit_frequency !== undefined
           ? 'You completed ' +
             completedDates.length +
             ' out of ' +
