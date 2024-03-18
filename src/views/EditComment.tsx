@@ -1,5 +1,5 @@
 import {Alert, TouchableOpacity, Keyboard, StyleSheet} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useComment} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 import {
@@ -8,14 +8,16 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import {Comment} from '../types/DBTypes';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller, set, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Card, Input, Button} from '@ui-kitten/components';
 
 export default function EditComment({route}: {route: any}) {
   const {comment} = route.params;
-  const {putComment} = useComment();
+  const {putComment, deleteComment} = useComment();
   const {update, setUpdate} = useUpdateContext();
+  const [isEdit, setIsEdit] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const values: Pick<Comment, 'comment_text'> = {
@@ -33,6 +35,25 @@ export default function EditComment({route}: {route: any}) {
     reset(values);
   };
 
+  const handleDelete = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        return;
+      }
+      const result = await deleteComment(comment.comment_id, token);
+      console.log('result', result);
+      if (!result) {
+        return;
+      }
+      Alert.alert(result.message);
+      setUpdate((prevState) => !prevState);
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert((error as Error).message);
+    }
+  };
+
   const edit = async (inputs: Pick<Comment, 'comment_text'>) => {
     try {
       const token = await AsyncStorage.getItem('token');
@@ -44,10 +65,13 @@ export default function EditComment({route}: {route: any}) {
         inputs.comment_text,
         token
       );
+      if (!result) {
+        return;
+      }
       Alert.alert(result.message);
-      setUpdate(!update);
-      navigation.navigate('Feed');
+      setUpdate((prevState) => !prevState);
       resetForm();
+      navigation.goBack();
     } catch (error) {
       Alert.alert((error as Error).message);
     }
@@ -82,6 +106,9 @@ export default function EditComment({route}: {route: any}) {
       backgroundColor: '#50623A',
       borderWidth: 1,
     },
+    deleteButton: {
+      backgroundColor: '#C70039',
+    },
   });
 
   return (
@@ -113,6 +140,17 @@ export default function EditComment({route}: {route: any}) {
         />
         <Button onPress={handleSubmit(edit)} style={styles.button}>
           Save
+        </Button>
+      </Card>
+      <Card
+        style={{
+          backgroundColor: '#527853',
+          margin: 10,
+          borderWidth: 0,
+        }}
+      >
+        <Button onPress={() => handleDelete()} style={styles.deleteButton}>
+          Delete comment
         </Button>
       </Card>
     </TouchableOpacity>

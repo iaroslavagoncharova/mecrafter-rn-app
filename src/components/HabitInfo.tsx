@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Picker} from '@react-native-picker/picker';
 import {useForm} from 'react-hook-form';
 import useUpdateContext from '../hooks/updateHooks';
-// import { useForm } from "../hooks/formHooks";
 
 export default function HabitInfo() {
   const values = {habit_frequency: ''};
@@ -38,7 +37,11 @@ export default function HabitInfo() {
         habit_frequency: selectedNumber.toString(),
       };
       const result = await postFrequency(frequency, token);
-      Alert.alert(result.message);
+      if (result) {
+        Alert.alert(result.message);
+        setUpdate(!update);
+        navigation.goBack();
+      }
     } catch (error) {
       Alert.alert((error as Error).message);
     }

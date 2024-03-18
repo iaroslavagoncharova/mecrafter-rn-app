@@ -8,7 +8,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import {Text, Button, Card} from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useMessage} from '../hooks/apiHooks';
+import {useHabit, useMessage} from '../hooks/apiHooks';
 import {useUserContext} from '../hooks/contextHooks';
 import {
   NavigationProp,
@@ -18,60 +18,64 @@ import {
 import {Calendar} from 'react-native-calendars';
 
 export default function Tracker() {
-  const [completedDates, setCompletedDates] = useState<string[]>([]);
-  const [lastClickedDate, setLastClickedDate] = useState('');
   const [congratsMessage, setCongratsMessage] = useState('');
+  const [completedDates, setCompletedDates] = useState<string[]>([]);
   const {messages, getMessages} = useMessage();
   const {user} = useUserContext();
+  const {postDates, getDates} = useHabit();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const today = new Date().toISOString().split('T')[0];
+
+  const getCompleted = async () => {
+    const token = await AsyncStorage.getItem('token');
+    if (!token) {
+      return;
+    }
+    try {
+      if (user?.habit_id) {
+        const result = await getDates(user?.habit_id, token);
+        if (result) {
+          const dates = result.map((item) => item);
+          setCompletedDates(dates);
+        }
+      }
+    } catch (error) {
+      console.log((error as Error).message);
+    }
+  };
 
   useEffect(() => {
-    getCompletedDates();
-    loadLastClickedDate();
+    getCompleted();
   }, []);
-
-  const getCompletedDates = async () => {
-    try {
-      await AsyncStorage.removeItem('completedDates');
-      await AsyncStorage.removeItem('lastClickedDate');
-      const completedDates = await AsyncStorage.getItem('completedDates');
-      if (completedDates !== null) {
-        setCompletedDates(JSON.parse(completedDates));
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const loadLastClickedDate = async () => {
-    try {
-      const lastClickedDate = await AsyncStorage.getItem('lastClickedDate');
-      if (lastClickedDate !== null) {
-        setLastClickedDate(lastClickedDate);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const handleClick = async () => {
     const today = new Date().toISOString().split('T')[0];
-    if (today !== lastClickedDate) {
-      setCompletedDates([...completedDates, today]);
-      setLastClickedDate(today);
-      try {
-        await AsyncStorage.setItem(
-          'completedDates',
-          JSON.stringify(completedDates)
-        );
-        await AsyncStorage.setItem('lastClickedDate', today);
-      } catch (e) {
-        console.error(e);
+    const token = await AsyncStorage.getItem('token');
+    try {
+      if (completedDates.includes(today)) {
+        return;
       }
+      if (!token) {
+        return;
+      }
+      setCompletedDates([...completedDates, today]);
+      if (user?.habit_id) {
+        console.log('habit_id', user?.habit_id);
+        const result = await postDates(user?.habit_id, today, token);
+        console.log('result', result);
+      }
+    } catch (error) {
+      console.log((error as Error).message);
     }
   };
 
-  const markedDates: {[key: string]: {marked: boolean, dotColor: string, selectedDotColor: string}} = completedDates.reduce((acc: any, date) => {
+  const markedDates: {
+    [key: string]: {
+      marked: boolean;
+      dotColor: string;
+      selectedDotColor: string;
+    };
+  } = completedDates.reduce((acc: any, date) => {
     acc[date] = {
       marked: true,
       dotColor: '#50623A',
@@ -123,7 +127,7 @@ export default function Tracker() {
             margin: 10,
           }}
           onPress={handleClick}
-          disabled={lastClickedDate === new Date().toISOString().split('T')[0]}
+          disabled={completedDates.includes(today)}
         >
           <Text>Mark as completed</Text>
         </Button>
@@ -135,11 +139,15 @@ export default function Tracker() {
         </TouchableOpacity>
       )}
       {congratsMessage === '' ? (
-        <Text style={{textAlign: 'center', margin: 10, padding: 10, color: 'white'}}>
+        <Text
+          style={{textAlign: 'center', margin: 10, padding: 10, color: 'white'}}
+        >
           Keep up the good work!
         </Text>
       ) : (
-        <Text style={{textAlign: 'center', margin: 10, padding: 10, color: 'white'}}>
+        <Text
+          style={{textAlign: 'center', margin: 10, padding: 10, color: 'white'}}
+        >
           {congratsMessage}
         </Text>
       )}

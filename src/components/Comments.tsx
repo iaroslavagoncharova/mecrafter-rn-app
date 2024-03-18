@@ -76,7 +76,10 @@ export default function Comments({
         post.post_id,
         token
       );
-      setUpdate(!update);
+      if (!result) {
+        return;
+      }
+      setUpdate((prevState) => !prevState);
       resetForm();
     } catch (error) {
       console.log((error as Error).message);
@@ -86,7 +89,7 @@ export default function Comments({
   useEffect(() => {
     getComments();
     getCount();
-  }, []);
+  }, [update]);
 
   const styles = StyleSheet.create({
     header: {

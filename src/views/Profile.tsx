@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import UserInfo from '../components/UserInfo';
 import HabitInfo from '../components/HabitInfo';
 import {useUserContext} from '../hooks/contextHooks';
@@ -11,11 +11,18 @@ import {
 import {Button, Card, Icon, Layout, useTheme} from '@ui-kitten/components';
 import useUpdateContext from '../hooks/updateHooks';
 import {useUser} from '../hooks/apiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Profile() {
   const {user, handleLogout} = useUserContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const theme = useTheme();
+  const [contextUpdated, setContextUpdated] = useState(false);
+
+  useEffect(() => {
+    setContextUpdated((prevState) => !prevState);
+  }, [user]);
+
   const styles = StyleSheet.create({
     layout: {
       backgroundColor: '#294B29',
@@ -35,20 +42,20 @@ export default function Profile() {
     },
   });
   return (
-      <ScrollView>
-        {user && (
-          <Layout style={styles.layout}>
-            <Card style={styles.card}>
-              <UserInfo user={user} />
-              <Button onPress={handleLogout} style={styles.signOutButton}>
-                Sign out
-              </Button>
-            </Card>
-            <Card style={styles.card}>
-              <HabitInfo />
-            </Card>
-          </Layout>
-        )}
-      </ScrollView>
+    <ScrollView>
+      {user && (
+        <Layout style={styles.layout}>
+          <Card style={styles.card}>
+            <UserInfo user={user} />
+            <Button onPress={handleLogout} style={styles.signOutButton}>
+              Sign out
+            </Button>
+          </Card>
+          <Card style={styles.card}>
+            <HabitInfo />
+          </Card>
+        </Layout>
+      )}
+    </ScrollView>
   );
 }

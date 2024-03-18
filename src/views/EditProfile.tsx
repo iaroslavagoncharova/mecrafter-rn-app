@@ -38,9 +38,10 @@ const EditProfile = ({route}: any) => {
         return;
       }
       const result = await putUser(inputs, token);
+      console.log(user);
       Alert.alert(result.message);
       setUpdate(!update);
-      navigation.navigate('Profile');
+      navigation.goBack();
       resetForm();
     } catch (e) {
       Alert.alert((e as Error).message);

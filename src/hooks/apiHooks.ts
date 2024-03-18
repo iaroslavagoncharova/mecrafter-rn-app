@@ -383,7 +383,40 @@ const useHabit = () => {
     return result;
   };
 
-  return {getCreated, postHabit, postFrequency, habits, updateHabit};
+  const postDates = async (
+    habit_id: number,
+    date: string,
+    token: string
+  ): Promise<MessageResponse> => {
+    const data = {date, habit_id};
+    console.log('postDates data', data);
+    const options: RequestInit = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify(data),
+    };
+    return await fetchData(
+      process.env.EXPO_PUBLIC_AUTH_API + '/habits/dates/' + habit_id,
+      options
+    );
+  };
+
+  const getDates = async (habit_id: number, token: string) => {
+    const options = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<string[]>(
+      process.env.EXPO_PUBLIC_AUTH_API + '/habits/dates/' + habit_id,
+      options
+    );
+  };
+
+  return {getCreated, postHabit, postFrequency, habits, updateHabit, postDates, getDates};
 };
 
 const useLike = () => {
@@ -495,7 +528,27 @@ const useComment = () => {
     );
   };
 
-  return {postComment, getCommentsByPostId, getCommentCount, putComment};
+  const deleteComment = async (comment_id: number, token: string) => {
+    const options: RequestInit = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    };
+    return await fetchData<MessageResponse>(
+      process.env.EXPO_PUBLIC_MEDIA_API + '/comments/' + comment_id,
+      options
+    );
+  };
+
+  return {
+    postComment,
+    getCommentsByPostId,
+    getCommentCount,
+    putComment,
+    deleteComment,
+  };
 };
 const useReflection = () => {
   const postReflection = async (
