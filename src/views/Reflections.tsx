@@ -6,10 +6,12 @@ import {useUserContext} from '../hooks/contextHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Layout, List} from '@ui-kitten/components';
 import ReflectionEntry from '../components/ReflectionEntry';
+import useUpdateContext from '../hooks/updateHooks';
 
 export default function Reflections() {
   const [reflections, setReflections] = useState<ReflectionWithPrompt[]>([]);
   const {user} = useUserContext();
+  const {update, setUpdate} = useUpdateContext();
   const {getReflectionsByUser} = useReflection();
 
   const fetchReflections = async () => {
@@ -22,12 +24,13 @@ export default function Reflections() {
       setReflections([]);
       return;
     }
+    result.reverse();
     setReflections(result);
   };
 
   useEffect(() => {
     fetchReflections();
-  }, [user]);
+  }, [update]);
 
   const styles = StyleSheet.create({
     container: {

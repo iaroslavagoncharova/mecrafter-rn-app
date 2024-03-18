@@ -167,7 +167,7 @@ export default function Tracker() {
           Your message of the day
         </Text>
         <Text style={{textAlign: 'center', margin: 10, padding: 10}}>
-          As {messages ? messages.message_author : ''} once said: "
+          As {messages ? messages.message_author : 'one good human'} once said: "
           {messages ? messages.message_text : 'No messages'}"
         </Text>
         <Button

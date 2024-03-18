@@ -3,16 +3,18 @@ import React, {useEffect, useState} from 'react';
 import {ReflectionWithPrompt} from '../types/DBTypes';
 import {useUserContext} from '../hooks/contextHooks';
 import {usePrompt, useReflection} from '../hooks/apiHooks';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller, set, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNPickerSelect from 'react-native-picker-select';
 import {Button, Input, Layout, List} from '@ui-kitten/components';
+import useUpdateContext from '../hooks/updateHooks';
 
 export default function ReflectionEntry(props: {
   reflections: ReflectionWithPrompt[];
 }) {
   const [selectedPrompt, setSelectedPrompt] = useState<string | null>(null);
   const {reflections} = props;
+  const {update, setUpdate} = useUpdateContext();
   const user = useUserContext();
   const {postReflection} = useReflection();
   const {promptList} = usePrompt();
@@ -44,8 +46,13 @@ export default function ReflectionEntry(props: {
         Number(selectedPrompt),
         token
       );
+      if (!result) {
+        return;
+      }
       Alert.alert(result.message);
+      setUpdate(!update);
       reset(values);
+      setSelectedPrompt(null);
     } catch (error) {
       console.log((error as Error).message);
     }
