@@ -79,7 +79,6 @@ The app's database consists of 9 tables:
 - **Auto login**: Automatically log in to your account upon opening the app, providing a seamless user experience.
 
 ## Known Issues
-- User likes are not always shown correctly (if a user logs in, their like is shown as someone else's, therefore it cannot be deleted, and the post cannot be liked again)
 
 ## References
 
