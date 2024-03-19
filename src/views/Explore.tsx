@@ -19,11 +19,13 @@ import {StyleSheet} from 'react-native';
 import {useForm} from 'react-hook-form';
 import RNPickerSelect from 'react-native-picker-select';
 import {useUserContext} from '../hooks/contextHooks';
+import useUpdateContext from '../hooks/updateHooks';
 
 export default function Explore() {
   const [filter, setFilter] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const {habits} = useHabit();
+  const {update, setUpdate} = useUpdateContext();
   const {user} = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState('');
   const placeholder = {
@@ -95,6 +97,7 @@ export default function Explore() {
       if (token) {
         const result = await updateHabit(inputs, token);
         Alert.alert(result.message);
+        setUpdate(!update);
         navigation.navigate('Tracker');
       }
     } catch (error) {

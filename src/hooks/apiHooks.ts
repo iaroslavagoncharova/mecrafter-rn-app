@@ -27,7 +27,6 @@ import useUpdateContext from './updateHooks';
 
 const usePost = () => {
   const [postArray, setPostArray] = useState<PostWithOwner[]>([]);
-  const [postsFetched, setPostsFetched] = useState<boolean>(false);
   const {update} = useUpdateContext();
 
   const getPosts = async () => {
@@ -37,7 +36,6 @@ const usePost = () => {
       );
       if (posts) {
         setPostArray(posts);
-        setPostsFetched(true);
       }
     } catch (error) {
       console.error('getPosts failed', error);
@@ -45,9 +43,7 @@ const usePost = () => {
   };
 
   useEffect(() => {
-    if (!postsFetched) {
       getPosts();
-    }
   }, [update]);
 
   const postPost = (

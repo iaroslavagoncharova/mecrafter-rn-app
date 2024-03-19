@@ -1,8 +1,9 @@
 import React, { createContext, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContextType, EditValues, Values } from "../types/LocalTypes";
-import { useAuth, useUser } from "../hooks/apiHooks";
+import { useAuth, useHabit, useUser } from "../hooks/apiHooks";
 import { User } from "../types/DBTypes";
+import {Alert} from "react-native";
 
 const UserContext = createContext<AuthContextType | null>(null);
 
@@ -10,6 +11,7 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const { postLogin } = useAuth();
   const { getUserByToken, putUser, deleteUser } = useUser();
+  const {updateHabit} = useHabit();
 
   const handleLogin = async (values: Values) => {
     try {
@@ -70,6 +72,18 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
       console.log((e as Error).message);
     }
   };
+
+  const handleHabit = async (inputs: {habit_id: string}) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (token) {
+        const result = await updateHabit(inputs, token);
+        Alert.alert(result.message);
+      }
+    } catch (error) {
+      Alert.alert((error as Error).message);
+    }
+  }
 
   return (
     <UserContext.Provider

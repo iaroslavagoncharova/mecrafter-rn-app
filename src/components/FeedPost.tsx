@@ -48,7 +48,7 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
             }
             const result = await deletePost(post.post_id, token);
             Alert.alert(result.message);
-            setUpdate(!update);
+            setUpdate((prevState) => !prevState);
           } catch (error) {
             console.log((error as Error).message);
           }
@@ -91,7 +91,7 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
       height: 200,
       resizeMode: 'cover',
       marginBottom: 10,
-      width: 100
+      width: 100,
     },
     actions: {
       flexDirection: 'row',
@@ -170,25 +170,35 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
             >
               <Icon style={styles.editButton} fill="#527853" name="edit" />
             </TouchableOpacity>
-            <Layout style={{
-              flexDirection: 'row',
-              backgroundColor: '#FAF8ED',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            <Layout
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#FAF8ED',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
               <Likes post={post} showComments={showComments} />
-              <Comments post={post} showComments={showComments} setShowComments={setShowComments} />
+              <Comments
+                post={post}
+                showComments={showComments}
+                setShowComments={setShowComments}
+              />
             </Layout>
           </Layout>
         ) : (
-          <>
+          <TouchableOpacity style={styles.mainContainer}>
             <TouchableOpacity>
               <Likes post={post} showComments={showComments} />
             </TouchableOpacity>
             <TouchableOpacity>
-              <Comments post={post} showComments={showComments} setShowComments={setShowComments} />
+              <Comments
+                post={post}
+                showComments={showComments}
+                setShowComments={setShowComments}
+              />
             </TouchableOpacity>
-          </>
+          </TouchableOpacity>
         )}
       </ListItem>
     </Card>

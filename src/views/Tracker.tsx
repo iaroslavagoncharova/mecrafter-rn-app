@@ -160,7 +160,7 @@ export default function Tracker() {
             ' out of ' +
             user?.habit_frequency +
             ' days'
-          : ''}
+          : 'Please set a habit frequency in your profile to start tracking'}
       </Text>
       <Card style={styles.card}>
         <Text style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20}}>

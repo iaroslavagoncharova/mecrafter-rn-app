@@ -40,7 +40,6 @@ export default function HabitInfo() {
       if (result) {
         Alert.alert(result.message);
         setUpdate(!update);
-        navigation.goBack();
       }
     } catch (error) {
       Alert.alert((error as Error).message);
