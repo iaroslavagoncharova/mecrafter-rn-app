@@ -1,8 +1,5 @@
 import {
-  View,
-  Text,
   Alert,
-  ScrollView,
   TouchableOpacity,
   Keyboard,
   Image,
@@ -17,7 +14,6 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import {Values} from '../types/LocalTypes';
 import {Controller, useForm} from 'react-hook-form';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Video} from 'expo-av';

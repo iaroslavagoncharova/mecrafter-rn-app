@@ -1,34 +1,26 @@
 import React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {UnauthorizedUser} from '../types/DBTypes';
 import {useUserContext} from '../hooks/contextHooks';
 import {
   Button,
-  Card,
   Text,
-  Divider,
-  List,
-  ListItem,
   Avatar,
   Layout,
   useTheme,
 } from '@ui-kitten/components';
-import {TouchableOpacity, View} from 'react-native';
+import {View} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {
   useNavigation,
   NavigationProp,
   ParamListBase,
 } from '@react-navigation/native';
-import {useUser} from '../hooks/apiHooks';
 import useUpdateContext from '../hooks/updateHooks';
 
 export default function UserInfo({user}: {user: UnauthorizedUser}) {
-  const [isEditing, setIsEditing] = useState(false);
   const {handleDelete} = useUserContext();
-  const theme = useTheme();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const {update, setUpdate} = useUpdateContext();
 
   const styles = StyleSheet.create({
     avatar: {

@@ -11,12 +11,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   Alert,
   Keyboard,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import {useEffect} from 'react';
-import {Button, Card, Layout, Text, Input} from '@ui-kitten/components';
+import {Button, Card, Text, Input} from '@ui-kitten/components';
 import useUpdateContext from '../hooks/updateHooks';
 
 const EditPost = ({route}: any) => {

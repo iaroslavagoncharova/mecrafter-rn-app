@@ -56,7 +56,6 @@ export default function Comments({
       const result = await getCommentCount(post.post_id);
       if (result) {
         setCount(result.count);
-        console.log('comment count', result.count);
       }
     } catch (error) {
       console.log((error as Error).message);
@@ -159,7 +158,7 @@ export default function Comments({
       height: 30,
       padding: 5,
       marginTop: 5,
-      margin: 10
+      margin: 10,
     },
     layout: {
       backgroundColor: 'white',
@@ -245,48 +244,60 @@ export default function Comments({
             }
           />
           {user ? (
-            <Layout style={styles.layout}>
-              <Controller
-                control={control}
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Comment is required',
-                  },
-                }}
-                render={({field: {onChange, onBlur, value}}) => (
-                  <Layout
-                    style={{
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      width: '100%',
-                    }}
-                  >
-                    <Text style={{fontWeight: 'bold', marginBottom: 5}}>
-                      Comment
-                    </Text>
-                    <Input
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                    />
-                  </Layout>
-                )}
-                name="comment_text"
-                defaultValue=""
-              />
-              <Layout>
-                <Icon
-                  name="paper-plane"
-                  style={styles.icon}
-                  fill="#527853"
-                  onPress={handleSubmit(addComment)}
+            user.user_id !== post.user_id ? (
+              <Layout style={styles.layout}>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: {
+                      value: true,
+                      message: 'Comment is required',
+                    },
+                  }}
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <Layout
+                      style={{
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%',
+                      }}
+                    >
+                      <Text style={{fontWeight: 'bold', marginBottom: 5}}>
+                        Comment
+                      </Text>
+                      <Input
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                      />
+                    </Layout>
+                  )}
+                  name="comment_text"
+                  defaultValue=""
                 />
+                <Layout>
+                  <Icon
+                    name="paper-plane"
+                    style={styles.icon}
+                    fill="#527853"
+                    onPress={handleSubmit(addComment)}
+                  />
+                </Layout>
               </Layout>
-            </Layout>
+            ) : (
+              <Text
+              style={{
+                textAlign: 'center',
+              }}
+              >You cannot comment your own post</Text>
+            )
           ) : (
-            <Text>Sign in to comment</Text>
+            <Text
+              style={{
+                textAlign: 'center',
+              }}
+            >Sign in to comment</Text>
           )}
         </Layout>
       )}

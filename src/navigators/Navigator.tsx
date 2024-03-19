@@ -2,24 +2,17 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
-  BottomNavigation,
-  BottomNavigationTab,
-  Layout,
-  Text,
-  useTheme,
+  useTheme
 } from '@ui-kitten/components';
 import {useUserContext} from '../hooks/contextHooks';
 import Feed from '../views/Feed';
 import Explore from '../views/Explore';
 import Tracker from '../views/Tracker';
-import Diary from '../views/Reflections';
 import Profile from '../views/Profile';
-import SignUp from '../components/SignUp';
 import EditPost from '../views/EditPost';
 import CreatePost from '../views/CreatePost';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Ionicons} from '@expo/vector-icons';
-import SignIn from '../components/SignIn';
 import AuthPage from '../views/AuthPage';
 import EditProfile from '../views/EditProfile';
 import Reflections from '../views/Reflections';

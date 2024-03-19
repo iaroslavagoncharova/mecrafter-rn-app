@@ -4,11 +4,6 @@ import {AuthContextType, EditValues, Values} from '../types/LocalTypes';
 import {useAuth, useHabit, useUser} from '../hooks/apiHooks';
 import {User} from '../types/DBTypes';
 import {Alert} from 'react-native';
-import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
 
 const UserContext = createContext<AuthContextType | null>(null);
 
@@ -33,7 +28,7 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('token');
-      setUser(null);
+      await setUser(null);
     } catch (error) {
       alert((error as Error).message);
     }
@@ -44,8 +39,9 @@ const UserProvider = ({children}: {children: React.ReactNode}) => {
       const token = await AsyncStorage.getItem('token');
       if (token) {
         const result = await getUserByToken(token);
-        console.log('autologin', result.user);
+        if (result) {
         setUser(result.user);
+        }
       }
     } catch (e) {
       console.log((e as Error).message);

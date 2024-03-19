@@ -1,10 +1,10 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useReflection} from '../hooks/apiHooks';
 import {ReflectionWithPrompt} from '../types/DBTypes';
 import {useUserContext} from '../hooks/contextHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Layout, List} from '@ui-kitten/components';
+import {Layout} from '@ui-kitten/components';
 import ReflectionEntry from '../components/ReflectionEntry';
 import useUpdateContext from '../hooks/updateHooks';
 

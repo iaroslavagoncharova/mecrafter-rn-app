@@ -14,7 +14,7 @@ import {Card, Input, Button} from '@ui-kitten/components';
 
 export default function EditComment({route}: {route: any}) {
   const {comment} = route.params;
-  const {putComment, deleteComment} = useComment();
+  const {putComment} = useComment();
   const {update, setUpdate} = useUpdateContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 

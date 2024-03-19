@@ -10,7 +10,6 @@ import {
   UserResponse,
 } from '../types/MessageTypes';
 import {
-  Comment,
   CommentWithOwner,
   Like,
   Message,
@@ -141,10 +140,11 @@ const useUser = () => {
         Authorization: 'Bearer ' + token,
       },
     };
-    return await fetchData<UserResponse>(
+    const result = await fetchData<UserResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/users/token',
       options
     );
+    return result;
   };
 
   const postUser = async (user: Record<string, string>) => {
@@ -253,10 +253,11 @@ const useAuth = () => {
       },
       body: JSON.stringify(values),
     };
-    return await fetchData<LoginResponse>(
+    const result = await fetchData<LoginResponse>(
       process.env.EXPO_PUBLIC_AUTH_API + '/auth/login',
       options
     );
+    return result;
   };
   return {postLogin};
 };
@@ -385,7 +386,6 @@ const useHabit = () => {
     token: string
   ): Promise<MessageResponse> => {
     const data = {date, habit_id};
-    console.log('postDates data', data);
     const options: RequestInit = {
       method: 'POST',
       headers: {
@@ -425,12 +425,10 @@ const useLike = () => {
       },
       body: JSON.stringify({post_id}),
     };
-    console.log('postLike options', options);
     const result = await fetchData<MessageResponse>(
       process.env.EXPO_PUBLIC_MEDIA_API + '/likes',
       options
     );
-    console.log('postLike result', result);
     return result;
   };
 
@@ -451,7 +449,6 @@ const useLike = () => {
       process.env.EXPO_PUBLIC_MEDIA_API + '/likes/bypost/user/' + post_id,
       options
     );
-    console.log('getLikeByUser result', result);
     return result;
   };
 
@@ -495,7 +492,6 @@ const useComment = () => {
     const comments = await fetchData<CommentWithOwner[]>(
       process.env.EXPO_PUBLIC_MEDIA_API + '/comments/bypost/' + post_id
     );
-    console.log(comments);
     return comments;
   };
 

@@ -1,9 +1,7 @@
 import {
   ScrollView,
   StyleSheet,
-  Touchable,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Text, Button, Card} from '@ui-kitten/components';
@@ -60,9 +58,7 @@ export default function Tracker() {
       }
       setCompletedDates([...completedDates, today]);
       if (user?.habit_id) {
-        console.log('habit_id', user?.habit_id);
-        const result = await postDates(user?.habit_id, today, token);
-        console.log('result', result);
+        await postDates(user?.habit_id, today, token);
       }
     } catch (error) {
       console.log((error as Error).message);

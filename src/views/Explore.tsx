@@ -1,4 +1,3 @@
-import {View, Alert} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useHabit} from '../hooks/apiHooks';
 import {
@@ -9,23 +8,19 @@ import {
 import {
   Text,
   List,
-  ListItem,
   Button,
   Input,
   Layout,
+  Icon,
 } from '@ui-kitten/components';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StyleSheet} from 'react-native';
-import {useForm} from 'react-hook-form';
 import RNPickerSelect from 'react-native-picker-select';
 import {useUserContext} from '../hooks/contextHooks';
-import useUpdateContext from '../hooks/updateHooks';
 
 export default function Explore() {
   const [filter, setFilter] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const {habits} = useHabit();
-  const {update, setUpdate} = useUpdateContext();
   const {user, handleHabit} = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState('');
   const navigation: NavigationProp<ParamListBase> = useNavigation();
@@ -119,6 +114,7 @@ export default function Explore() {
       alignItems: 'center',
       backgroundColor: '#294B29',
       padding: 10,
+      width: '100%',
     },
     searchInput: {
       margin: 10,
@@ -140,7 +136,7 @@ export default function Explore() {
       alignItems: 'center',
       borderColor: '#527853',
       borderWidth: 2,
-      width: '90%',
+      width: '95%',
     },
     text: {
       padding: 5,
@@ -149,6 +145,13 @@ export default function Explore() {
       fontSize: 18,
       fontWeight: 'bold',
       marginBottom: 8,
+    },
+    icon: {
+      width: 64,
+      height: 64,
+      borderRadius: 50,
+      marginBottom: 10,
+      marginTop: 10
     },
   });
 

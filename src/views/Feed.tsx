@@ -1,13 +1,10 @@
 import {StyleSheet, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {usePost} from '../hooks/apiHooks';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import FeedPost from '../components/FeedPost';
-import CreatePost from './CreatePost';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
 import {Button, Icon, Layout, List, Text} from '@ui-kitten/components';
 import {useUserContext} from '../hooks/contextHooks';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Feed = ({navigation}: {navigation: NavigationProp<ParamListBase>}) => {
   const {postArray} = usePost();

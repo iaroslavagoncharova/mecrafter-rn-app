@@ -11,9 +11,7 @@ import {
   Card,
   Avatar,
   ListItem,
-  Button,
   Divider,
-  useTheme,
   Text,
   Icon,
   Layout,
@@ -134,56 +132,33 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
   return (
     <Card style={styles.postContainer}>
       <View style={styles.header}>
-        <Avatar
-          source={{uri: 'http://via.placeholder.com/150x150'}}
-          size="medium"
-        />
+        <Avatar source={{uri: 'http://via.placeholder.com/150x150'}} size="medium" />
         <Text style={styles.username}>{post.username}</Text>
       </View>
       <View style={styles.postContent}>
         <Divider />
         <Text style={styles.postTitle}>{post.post_title}</Text>
         <Text style={styles.postText}>{post.post_text}</Text>
-        <Image
-          source={{uri: post.thumbnail}}
-          style={{aspectRatio: 1, height: 200}}
-        />
+        <Image source={{uri: post.thumbnail}} style={{aspectRatio: 1, height: 200}} />
         <Text>{new Date(post.created_at).toLocaleDateString('fi-FI')}</Text>
       </View>
       <Divider />
       <ListItem style={styles.actions}>
         {user?.user_id === post.user_id ? (
-          <Layout
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              backgroundColor: '#FAF8ED',
-            }}
-          >
-            <TouchableOpacity onPress={handleDelete}>
-              <Icon style={styles.deleteButton} fill="#CC3636" name="trash-2" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('EditPost', post);
-              }}
-            >
-              <Icon style={styles.editButton} fill="#527853" name="edit" />
-            </TouchableOpacity>
-            <Layout
-              style={{
-                flexDirection: 'row',
-                backgroundColor: '#FAF8ED',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
+          <Layout style={{flexDirection: 'row', justifyContent: 'center', backgroundColor: '#FAF8ED'}}>
+            {!showComments && (
+              <>
+                <TouchableOpacity onPress={handleDelete}>
+                  <Icon style={styles.deleteButton} fill="#CC3636" name="trash-2" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { navigation.navigate('EditPost', post); }}>
+                  <Icon style={styles.editButton} fill="#527853" name="edit" />
+                </TouchableOpacity>
+              </>
+            )}
+            <Layout style={{flexDirection: 'row', backgroundColor: '#FAF8ED', justifyContent: 'center', alignItems: 'center'}}>
               <Likes post={post} showComments={showComments} />
-              <Comments
-                post={post}
-                showComments={showComments}
-                setShowComments={setShowComments}
-              />
+              <Comments post={post} showComments={showComments} setShowComments={setShowComments} />
             </Layout>
           </Layout>
         ) : (
@@ -192,17 +167,13 @@ const FeedPost = ({post}: {post: PostWithOwner}) => {
               <Likes post={post} showComments={showComments} />
             </TouchableOpacity>
             <TouchableOpacity>
-              <Comments
-                post={post}
-                showComments={showComments}
-                setShowComments={setShowComments}
-              />
+              <Comments post={post} showComments={showComments} setShowComments={setShowComments} />
             </TouchableOpacity>
           </TouchableOpacity>
         )}
       </ListItem>
     </Card>
   );
-};
+}
 
 export default FeedPost;

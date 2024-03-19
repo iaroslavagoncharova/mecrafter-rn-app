@@ -6,24 +6,19 @@ import {
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  Alert,
   Keyboard,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import {Button, Card, Input, Text} from '@ui-kitten/components';
-import {PutUserValues, User} from '../types/DBTypes';
+import {User} from '../types/DBTypes';
 import useUpdateContext from '../hooks/updateHooks';
 import {useUserContext} from '../hooks/contextHooks';
 import {EditValues} from '../types/LocalTypes';
 
 const EditProfile = ({route}: any) => {
   const user: User = route.params;
-  const {putUser} = useUser();
-  const {update, setUpdate} = useUpdateContext();
   const {handleEdit} = useUserContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
 

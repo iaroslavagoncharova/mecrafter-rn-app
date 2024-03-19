@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { UserContext } from '../contexts/UserContext';
-// import { HabitContext } from '../contexts/HabitContext';
 
 const useUserContext = () => {
     const context = useContext(UserContext);

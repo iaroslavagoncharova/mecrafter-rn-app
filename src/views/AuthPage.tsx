@@ -1,7 +1,6 @@
-import {View, Text, TouchableOpacity, Keyboard} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {useUserContext} from '../hooks/contextHooks';
-import {Button, Layout} from '@ui-kitten/components';
+import {TouchableOpacity, Keyboard} from 'react-native';
+import React, {useState} from 'react';
+import {Button} from '@ui-kitten/components';
 import SignIn from '../components/SignIn';
 import SignUp from '../components/SignUp';
 

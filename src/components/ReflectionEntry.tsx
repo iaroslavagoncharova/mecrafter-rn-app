@@ -1,5 +1,5 @@
 import {View, Text, Alert, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {ReflectionWithPrompt} from '../types/DBTypes';
 import {useUserContext} from '../hooks/contextHooks';
 import {usePrompt, useReflection} from '../hooks/apiHooks';
@@ -51,7 +51,7 @@ export default function ReflectionEntry(props: {
       }
       Alert.alert(result.message);
       setUpdate(!update);
-      reset(values);
+      resetForm();
       setSelectedPrompt(null);
     } catch (error) {
       console.log((error as Error).message);

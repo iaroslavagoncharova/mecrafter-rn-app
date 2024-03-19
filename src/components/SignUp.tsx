@@ -4,20 +4,13 @@ import {useUser} from '../hooks/apiHooks';
 import {Controller, useForm} from 'react-hook-form';
 import {
   Icon,
-  IconElement,
   Input,
   Layout,
   Text,
   useTheme,
 } from '@ui-kitten/components';
-import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
 
 const SignUp = ({handleToggle}: {handleToggle: () => void}) => {
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {postUser, getUsernameAvailability, getEmailAvailability} = useUser();
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const toggleShowPassword = () => setShowPassword(!showPassword);

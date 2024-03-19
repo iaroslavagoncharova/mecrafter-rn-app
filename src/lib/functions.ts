@@ -6,7 +6,6 @@ const fetchData = async <T>(
 ): Promise<T> => {
   console.log('fetching data from url: ', url);
   const response = await fetch(url, options);
-  // console.log(response);
   const json = await response.json();
   if (!response.ok) {
     const errorJson = json as unknown as ErrorResponse;

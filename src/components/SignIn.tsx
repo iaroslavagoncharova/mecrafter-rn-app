@@ -1,13 +1,8 @@
 import React, {useState} from 'react';
-import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, StyleSheet} from 'react-native';
 import {useUserContext} from '../hooks/contextHooks';
 import {Values} from '../types/LocalTypes';
 import {useForm, Controller} from 'react-hook-form';
-import {
-  useNavigation,
-  NavigationProp,
-  ParamListBase,
-} from '@react-navigation/native';
 import {
   Icon,
   IconElement,
@@ -22,14 +17,12 @@ const AlertIcon = (props: any): IconElement => (
 );
 
 const SignIn = () => {
-  const [register, setRegister] = useState(false);
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
   const {handleLogin} = useUserContext();
   const [showPassword, setShowPassword] = useState<boolean>(true);
   const toggleShowPassword = () => setShowPassword(!showPassword);
   const renderIcon = (props: any): IconElement => (
     <TouchableOpacity onPress={toggleShowPassword}>
-      <Icon {...props} name={showPassword ? 'eye-off' : 'eye'} />
+      <Icon {...props} name={showPassword ? 'eye-off' : 'eye'} fill={showPassword ? 'grey' : 'green'} />
     </TouchableOpacity>
   );
   const renderCaption = () => {
@@ -149,6 +142,7 @@ const SignIn = () => {
             message: 'Password is required',
           },
           maxLength: 20,
+          minLength: 8,
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input

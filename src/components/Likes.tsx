@@ -1,7 +1,6 @@
 import {
   View,
   Text,
-  Touchable,
   TouchableOpacity,
   StyleSheet,
   Alert,
@@ -24,7 +23,6 @@ export default function Likes({post, showComments}: {post: PostWithOwner; showCo
   const getCount = async () => {
     try {
       const result = await getCountByPost(post.post_id);
-      console.log('like count', result.count);
       setCount(result.count);
     } catch (e) {
       console.log((e as Error).message);
@@ -33,12 +31,14 @@ export default function Likes({post, showComments}: {post: PostWithOwner; showCo
 
   const getLikesByUser = async () => {
     const token = await AsyncStorage.getItem('token');
-    if (!token || !user) {
+    if (!token) {
       return;
     }
     try {
       const userLike = await getLikeByUser(post.post_id, token);
-      setUserLiked(!!userLike);
+      if (userLike) {
+        setUserLiked(!!userLike);
+      }
     } catch (error) {
       console.log((error as Error).message);
     }
@@ -47,6 +47,7 @@ export default function Likes({post, showComments}: {post: PostWithOwner; showCo
   const handleLike = async () => {
     const token = await AsyncStorage.getItem('token');
     if (!token || !user) {
+      Alert.alert('You need to be logged in to like a post');
       return;
     }
     if (user.user_id === post.user_id) {
@@ -59,13 +60,11 @@ export default function Likes({post, showComments}: {post: PostWithOwner; showCo
         setUserLiked(false);
         setCount((prev) => prev - 1);
         setUpdate(!update);
-        console.log('like deleted');
       } else {
         await postLike(post.post_id, token);
         setUserLiked(true);
         setCount((prev) => prev + 1);
         setUpdate(!update);
-        console.log('like posted');
       }
     } catch (error) {
       console.log((error as Error).message);
@@ -76,6 +75,11 @@ export default function Likes({post, showComments}: {post: PostWithOwner; showCo
     getLikesByUser();
     getCount();
   }, [update]);
+
+  useEffect(() => {
+    getLikesByUser();
+    getCount();
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
