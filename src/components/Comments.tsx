@@ -161,7 +161,7 @@ export default function Comments({
           {count ? count : 0}
         </Text>
       </TouchableOpacity>
-      {showComments && user?.user_id !== post.user_id && (
+      {showComments && (
         <Layout style={{backgroundColor: '#FAF8ED', width: 300}}>
           <List
             style={{backgroundColor: '#FAF8ED', width: '100%'}}
