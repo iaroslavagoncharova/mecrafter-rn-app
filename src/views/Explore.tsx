@@ -26,8 +26,10 @@ export default function Explore() {
   const [searchInput, setSearchInput] = useState('');
   const {habits} = useHabit();
   const {update, setUpdate} = useUpdateContext();
-  const {user} = useUserContext();
+  const {user, handleHabit} = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState('');
+  const navigation: NavigationProp<ParamListBase> = useNavigation();
+
   const placeholder = {
     label: 'Select an option...',
     value: null,
@@ -88,21 +90,10 @@ export default function Explore() {
   const [categorySelected, setCategorySelected] = useState(false);
   const [resetTriggered, setResetTriggered] = useState(false);
   const values = {habit_id: ''};
-  const {updateHabit} = useHabit();
-  const navigation: NavigationProp<ParamListBase> = useNavigation();
 
   const changeHabit = async (inputs: {habit_id: string}) => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        const result = await updateHabit(inputs, token);
-        Alert.alert(result.message);
-        setUpdate(!update);
-        navigation.navigate('Tracker');
-      }
-    } catch (error) {
-      Alert.alert((error as Error).message);
-    }
+    await handleHabit(inputs);
+    navigation.navigate('Profile');
   };
 
   const resetFilters = () => {

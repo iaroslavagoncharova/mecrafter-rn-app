@@ -1,49 +1,31 @@
 import React, {useEffect} from 'react';
 import {useState} from 'react';
 import {useUserContext} from '../hooks/contextHooks';
-import {useHabit} from '../hooks/apiHooks';
-import {Card, Text, Button, Layout} from '@ui-kitten/components';
-import {Alert, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Text, Button, Layout} from '@ui-kitten/components';
+import {Alert, StyleSheet, View} from 'react-native';
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Picker} from '@react-native-picker/picker';
 import {useForm} from 'react-hook-form';
-import useUpdateContext from '../hooks/updateHooks';
 
 export default function HabitInfo() {
   const values = {habit_frequency: ''};
-  const {postFrequency} = useHabit();
   const [editFrequency, setEditFrequency] = useState(false);
   const {user} = useUserContext();
   const navigation: NavigationProp<ParamListBase> = useNavigation();
   const [selectedNumber, setSelectedNumber] = useState(1);
-  const {update, setUpdate} = useUpdateContext();
+  const {handleFrequency} = useUserContext();
 
   const handleNumberChange = (number: number) => {
     setSelectedNumber(number);
   };
 
   const addFrequency = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (!token) {
-        return;
-      }
-      const frequency = {
-        habit_frequency: selectedNumber.toString(),
-      };
-      const result = await postFrequency(frequency, token);
-      if (result) {
-        Alert.alert(result.message);
-        setUpdate(!update);
-      }
-    } catch (error) {
-      Alert.alert((error as Error).message);
-    }
+    handleFrequency({habit_frequency: selectedNumber.toString()});
+    navigation.navigate('Profile');
   };
 
   const {
