@@ -80,7 +80,7 @@ The app's database consists of 9 tables:
 - **Auto login**: Automatically log in to your account upon opening the app, providing a seamless user experience.
 
 ## Known Issues
-- User likes are not always shown correctly on initial load
+- User likes are not shown correctly on logout (user like stays although the user should be set to null).
 
 ## References
 
