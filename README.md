@@ -47,6 +47,8 @@ To deploy the MeCrafter app, follow these steps:
 
 ## API Documentation
 
+Documentation exists and can be shown from the server files, but is not visible when opening the browser due to certification limitations.
+
 [Auth-api](http://10.120.32.96/auth-api/)
 [Media-api](http://10.120.32.96/media-api/)
 
