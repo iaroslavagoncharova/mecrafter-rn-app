@@ -9,6 +9,7 @@
 <img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/655ae3ff-e64c-45d7-ace2-cdb9bebc1346" alt="Feed" width="300" />
 <img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/e918208a-0000-4909-a506-6b91387b8f35" alt="Feed when not signed in" width="300" /> 
 <img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/8aa75503-cee3-40fa-9110-a43f68a97bac" alt="Comment" width="300" /> 
+<img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/642d1af7-f6cd-4063-8c12-b34c0eebb568" alt="Comments" width="300" /> 
 <img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/8e851547-286c-4d02-b0fe-a292d292a9f9" alt="Post a comment" width="300" />
 <img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/ba103854-8525-4ff1-9230-4a0d2595bbee" alt="Like" width="300" />
 <img src="https://github.com/iaroslavagoncharova/mecrafter-rn-app/assets/111697910/f6cc1607-5bc9-4bef-8505-856a61973d73" alt="Comment editing" width="300" /> 
